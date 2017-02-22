@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Zencoder</title>
+	<meta charset="utf-8">
+	{% load staticfiles %}
+	<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+	<div>
+		<div class="headerLeft">
+			{% if 'user_id' in request.session %}
+				<h1>ZENCODER</h1>
+				<p>A place to be Zen</p>
+			{% else %}
+				<h1>Welcome to ZENCODER</h1>
+				<p>A place where you can be Zen while coding</p>
+			{% endif %}
+		</div>
+		{% if 'user_id' in request.session %}
+			<p class='user'>{{ request.session.user_first_name }} {{ request.session.user_last_name }} ({{ request.session.user_email }}) | <a href="/logout">logout</a></p>
+		{% endif %}
+	</div>
+	
+	{% if messages %}
+		<ul class="error">
+			{% for message in messages %}
+				<li>{{ message }}</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+
+	{% if 'user_id' in request.session %}
+		<div class="wall">
+			<h1>
+				You are In
+			</h1>
+			{% for user in users %}
+				<p>{{ user.id }} - {{ user.first_name }} {{ user.last_name }} ({{ user.email }}) <a href="/users/delete/{{ user.id }}">delete</a></p>
+			{% endfor %}
+		</div>
+	{% endif %}
+
+	{% if not 'user_id' in request.session %}
+		<div class="login">
+			<form action="/login" method="POST">
+				<h2>Login</h2>
+				<label>
+					Email: <input type="email" name="email">
+				</label>
+				<label>
+					Password: <input type="password" name="pass">
+				</label>
+				<button type="submit">Log In</button>
+				{% csrf_token %}
+			</form>
+			<div class='verticalBorder'></div>
+			<form action="/register" method="POST">
+				<h2>Register</h2>
+				<label>
+					First Name: <input type="text" name="fname">
+				</label>
+				<label>
+					Last Name: <input type="text" name="lname">
+				</label>
+				<label>
+					Email: <input type="email" name="email">
+				</label>
+				<label>
+					Password: <input type="password" name="pass">
+				</label>
+				<label>
+					Confirm password: <input type="password" name="passc">
+				</label>
+				<button type="submit">Register</button>
+				{% csrf_token %}
+			</form>
+		</div>
+	{% endif %}
+</body>
+</html>
